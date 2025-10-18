@@ -1,21 +1,21 @@
-import TaskItem from "./TaskItem"
+import TaskItem from "./TaskItem";
+
+const tasks = [
+  { id: 1, text: "Terminar FocusList", done: false },
+  { id: 2, text: "Hacer deploy en GitHub Pages", done: false },
+];
 
 function TaskList() {
-  const tasks = [
-    { id: 1, text: "Aprender React ⚛️", done: false },
-    { id: 2, text: "Configurar Tailwind 🎨", done: true },
-    { id: 3, text: "Construir FocusList ✅", done: false },
-  ]
-
   return (
-    <main className="max-w-md mx-auto mt-8 p-4">
-      <ul>
+    <div>
+      <h2 className="text-lg font-semibold mb-4">Tus Tareas</h2>
+      <ul className="space-y-3">
         {tasks.map((task) => (
-          <TaskItem key={task.id} text={task.text} done={task.done} />
+          <TaskItem key={task.id} task={task} />
         ))}
       </ul>
-    </main>
-  )
+    </div>
+  );
 }
 
-export default TaskList
+export default TaskList;

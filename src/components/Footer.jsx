@@ -1,9 +1,9 @@
 function Footer() {
   return (
-    <footer className="text-center text-gray-500 text-sm py-4 mt-8">
-      Hecho con ❤️ en React + Tailwind
+    <footer className="text-center py-4 text-gray-500 text-sm">
+      © 2025 FocusList - Hecho con React + Tailwind
     </footer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;
