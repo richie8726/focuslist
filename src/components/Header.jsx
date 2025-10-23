@@ -1,11 +1,10 @@
-function Header() {
+export default function Header() {
   return (
-    <header className="mb-6">
-      <h1 className="text-3xl font-semibold text-gray-800 text-center">
-        FocusList
-      </h1>
-    </header>
+    <div className="flex items-center justify-between">
+      <div>
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Tus tareas</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Céntrate en una sola tarea a la vez</p>
+      </div>
+    </div>
   );
 }
-
-export default Header;

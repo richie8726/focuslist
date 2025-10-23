@@ -1,9 +1,8 @@
-function Footer() {
+export default function Footer({ count }) {
   return (
-    <footer className="text-center py-4 text-gray-500 text-sm">
-      © 2025 FocusList - Hecho con React + Tailwind
-    </footer>
+    <div className="mt-4 text-sm text-gray-600 dark:text-gray-400 flex items-center justify-between">
+      <div>{count} tareas pendientes</div>
+      <div className="text-xs">Focuslist • Hecho con ❤️ — Richie</div>
+    </div>
   );
 }
-
-export default Footer;
