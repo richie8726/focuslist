@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import TaskList from "./components/TaskList";
 import Footer from "./components/Footer";
 import CalendarPanel from "./components/CalendarPanel";
+import BackgroundSelector from "./components/BackgroundSelector";
 
 const STORAGE_KEY = "focuslist_tasks_v1";
 
@@ -26,29 +27,12 @@ export default function TodoApp() {
   const [dueDate, setDueDate] = useState("");
   const [filter, setFilter] = useState("all");
   const [selectedDate, setSelectedDate] = useState(null);
-  const [backgroundUrl, setBackgroundUrl] = useState(
-    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80"
-  );
 
-  // 🔹 Aplica el fondo directamente al <body>
-  useEffect(() => {
-    document.body.style.backgroundImage = `url("${backgroundUrl}")`;
-    document.body.style.backgroundSize = "cover";
-    document.body.style.backgroundPosition = "center";
-    document.body.style.backgroundAttachment = "fixed";
-    document.body.style.backgroundRepeat = "no-repeat";
-    document.body.style.backgroundColor = "transparent";
-    document.body.style.transition = "background-image 0.6s ease-in-out";
-
-    console.log("🖼️ Fondo aplicado:", backgroundUrl);
-  }, [backgroundUrl]);
-
-  // Guarda tareas en localStorage
+  // Guardar tareas
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
   }, [tasks]);
 
-  // Agregar tarea
   const addTask = (e) => {
     e?.preventDefault();
     if (!newTask.trim()) return;
@@ -65,19 +49,13 @@ export default function TodoApp() {
     setDueDate("");
   };
 
-  // Alternar tarea completada
-  const toggleTask = (id) => {
+  const toggleTask = (id) =>
     setTasks((s) =>
       s.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
     );
-  };
 
-  // Eliminar tarea
-  const deleteTask = (id) => {
-    setTasks((s) => s.filter((t) => t.id !== id));
-  };
+  const deleteTask = (id) => setTasks((s) => s.filter((t) => t.id !== id));
 
-  // Contadores
   const counts = useMemo(() => {
     const total = tasks.length;
     const completed = tasks.filter((t) => t.completed).length;
@@ -85,12 +63,10 @@ export default function TodoApp() {
     return { total, completed, pending };
   }, [tasks]);
 
-  // Filtrar tareas
   const filteredTasks = useMemo(() => {
     let list = tasks;
     if (filter === "active") list = list.filter((t) => !t.completed);
     if (filter === "completed") list = list.filter((t) => t.completed);
-
     if (selectedDate) {
       list = list.filter((t) => {
         const d = t.dueDate || t.createdAt;
@@ -99,7 +75,6 @@ export default function TodoApp() {
         return iso === selectedDate;
       });
     }
-
     return list;
   }, [tasks, filter, selectedDate]);
 
@@ -107,11 +82,10 @@ export default function TodoApp() {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {/* 🧾 Panel principal */}
       <section className="md:col-span-2">
-        {/* Fondo semi-transparente sobre la imagen */}
         <div className="rounded-2xl shadow-lg overflow-hidden bg-image-overlay p-6">
           <Header />
 
-          {/* Formulario para agregar tareas */}
+          {/* Formulario */}
           <form onSubmit={addTask} className="flex gap-2 mt-4 mb-4">
             <input
               value={newTask}
@@ -144,49 +118,29 @@ export default function TodoApp() {
             </div>
 
             <div className="ml-auto flex gap-2">
-              <button
-                onClick={() => {
-                  setFilter("all");
-                  setSelectedDate(null);
-                }}
-                className={`px-3 py-1 rounded ${
-                  filter === "all"
-                    ? "bg-indigo-500 text-white"
-                    : "bg-gray-100 dark:bg-zinc-700"
-                }`}
-              >
-                Todas
-              </button>
-              <button
-                onClick={() => {
-                  setFilter("active");
-                  setSelectedDate(null);
-                }}
-                className={`px-3 py-1 rounded ${
-                  filter === "active"
-                    ? "bg-indigo-500 text-white"
-                    : "bg-gray-100 dark:bg-zinc-700"
-                }`}
-              >
-                Pendientes
-              </button>
-              <button
-                onClick={() => {
-                  setFilter("completed");
-                  setSelectedDate(null);
-                }}
-                className={`px-3 py-1 rounded ${
-                  filter === "completed"
-                    ? "bg-indigo-500 text-white"
-                    : "bg-gray-100 dark:bg-zinc-700"
-                }`}
-              >
-                Completadas
-              </button>
+              {["all", "active", "completed"].map((type) => (
+                <button
+                  key={type}
+                  onClick={() => {
+                    setFilter(type);
+                    setSelectedDate(null);
+                  }}
+                  className={`px-3 py-1 rounded ${
+                    filter === type
+                      ? "bg-indigo-500 text-white"
+                      : "bg-gray-100 dark:bg-zinc-700"
+                  }`}
+                >
+                  {type === "all"
+                    ? "Todas"
+                    : type === "active"
+                    ? "Pendientes"
+                    : "Completadas"}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Lista de tareas */}
           <TaskList
             tasks={filteredTasks}
             toggleTask={toggleTask}
@@ -196,65 +150,14 @@ export default function TodoApp() {
         </div>
       </section>
 
-      {/* 📅 Panel lateral: calendario + cambio de fondo */}
-      <aside className="md:col-span-1">
+      {/* 📅 Lateral: calendario + fondos */}
+      <aside className="md:col-span-1 space-y-4">
         <CalendarPanel
           tasks={tasks}
           onSelectDate={(dateStr) => setSelectedDate(dateStr)}
           clearSelection={() => setSelectedDate(null)}
         />
-
-        <div className="mt-4 space-y-2">
-          <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300">
-            Cambiar fondo
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() =>
-                setBackgroundUrl(
-                  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80"
-                )
-              }
-              className="bg-gray-200 hover:bg-gray-300 text-xs px-2 py-1 rounded"
-            >
-              Minimalista claro
-            </button>
-            <button
-              onClick={() =>
-                setBackgroundUrl(
-                  "https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1600&q=80"
-                )
-              }
-              className="bg-gray-200 hover:bg-gray-300 text-xs px-2 py-1 rounded"
-            >
-              Oscuro elegante
-            </button>
-            <button
-              onClick={() =>
-                setBackgroundUrl(
-                  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80"
-                )
-              }
-              className="bg-gray-200 hover:bg-gray-300 text-xs px-2 py-1 rounded"
-            >
-              Bosque relajante
-            </button>
-            <button
-              onClick={() =>
-                setBackgroundUrl(
-                  "https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1600&q=80"
-                )
-              }
-              className="bg-gray-200 hover:bg-gray-300 text-xs px-2 py-1 rounded"
-            >
-              Atardecer cálido
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-          Fondos por Unsplash (uso gratuito).
-        </div>
+        <BackgroundSelector />
       </aside>
     </div>
   );
