@@ -18,22 +18,19 @@ export default function App() {
   }, [darkMode]);
 
   return (
-    <div className="min-h-screen transition-colors duration-500 bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-6">
-      <div className="w-full max-w-4xl">
+    <div className="min-h-screen transition-colors duration-500 bg-transparent flex items-center justify-center p-6">
+      <div className="w-full max-w-5xl">
         <header className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">FocusList</h1>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="px-3 py-2 rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:scale-105 transition-transform"
-              aria-label="toggle theme"
-            >
-              {darkMode ? "🌞 Día" : "🌙 Noche"}
-            </button>
-          </div>
+          <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
+            FocusList
+          </h1>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="px-3 py-2 rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 hover:scale-105 transition-transform"
+          >
+            {darkMode ? "🌞 Día" : "🌙 Noche"}
+          </button>
         </header>
-
         <main>
           <TodoApp />
         </main>
